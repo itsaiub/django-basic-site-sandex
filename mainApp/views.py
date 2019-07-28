@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Tutorial
+from .models import Tutorial, TutorialCategory, TutorialSeries
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
@@ -8,8 +8,24 @@ from .forms import NewUserForm
 # Create your views here.
 
 
+def single_slug(request, single_slug):
+    # first check to see if the url is in categories.
+    categories = [c.category_slug for c in TutorialCategory.objects.all()]
+    if single_slug in categories:
+        maching_series = TutorialSeries.objects.filter(
+            tutorial_category__category_slug=single_slug)
+        series_urls = {}
+
+        for m in maching_series.all():
+            part_one = Tutorial.objects.filter(
+                tutorial_series__tutorial_series=m.tutorial_series).earliest('tutorial_published')
+            series_urls[m] = part_one.tutorial_slug
+
+        return render(request, 'mainApp/category.html', {'tutorial_series': maching_series, 'part_ones': series_urls})
+
+
 def homepage(request):
-    return render(request=request, template_name='mainApp/home.html', context={'tutorials': Tutorial.objects.all})
+    return render(request=request, template_name='mainApp/categories.html', context={'categories': TutorialCategory.objects.all})
 
 
 def register(request):

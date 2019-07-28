@@ -6,8 +6,8 @@ from datetime import datetime
 
 class TutorialCategory(models.Model):
     tutorial_category = models.CharField(max_length=200)
-    catetory_summary = models.CharField(max_length=200)
-    catetory_slug = models.CharField(max_length=200)
+    category_summary = models.CharField(max_length=200)
+    category_slug = models.CharField(max_length=200)
 
 
 # Gives the proper plural name for admin
