@@ -23,6 +23,14 @@ def single_slug(request, single_slug):
 
         return render(request, 'mainApp/category.html', {'tutorial_series': maching_series, 'part_ones': series_urls})
 
+    tutorials = [t.tutorial_slug for t in Tutorial.objects.all()]
+    if single_slug in tutorials:
+        this_tutorial = Tutorial.objects.get(tutorial_slug=single_slug)
+
+        return render(request, 'mainApp/tutorial.html', {'tutorial': this_tutorial})
+
+    return HttpResponse(f'{single_slug} does not correspond to anything')
+
 
 def homepage(request):
     return render(request=request, template_name='mainApp/categories.html', context={'categories': TutorialCategory.objects.all})
